@@ -14,11 +14,11 @@
         <p>This simple app will allow you to choose a location on a map and it will give you places, that could be interesting to shoot in the area you select.</p>
     </header>
     <section>
-        <h2>Choose the location</h2>
+        <h2>Choose the location and radius</h2>
         <div id="map"></div>
         <form>
-            <label for="Radius">Set the radius of the area(in meters)</label>
-            <input type="range" name="radius" id="radius" min="100" max="10000" step="100" value="500">
+            <label for="radius">Set the radius of the area</label>
+            <input type="range" name="radius" id="radius" min="100" max="10000" step="100" value="1000">
         </form>
     </section>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

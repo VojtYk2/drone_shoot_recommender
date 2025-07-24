@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    font-family: Arial, sans-serif;
+    background-color: whitesmoke;
+    margin: 0;
+    padding: 20px;
+    width: calc(100% - 40px);
+}
+
+#map {
+    height: 300px;
+    width: 300px;
+}

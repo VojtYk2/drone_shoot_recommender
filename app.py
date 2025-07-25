@@ -1,7 +1,26 @@
 from flask import Flask, render_template, request, jsonify
-import json
+import requests
 
 app = Flask(__name__)
+
+def get_recommendations(lat, lng, radius):
+    overpass_url = "https://overpass-api.de/api/interpreter"
+    query = f"""
+    [out:json];
+    (
+        node()
+    )
+    """
+
+    response = requests.get(overpass_url, params={'data': query})
+    data = response.json()
+    recommendations = []
+    for recommendation in data['elements']:
+        recommendations.append(recommendation['tags']['name'])
+
+    return recommendations
+
+
 
 @app.route('/')
 def home():
@@ -14,7 +33,7 @@ def submit_form():
     lng = data['lng']
     radius = data['radius']
 
-    recommendations = ["Park A", "Viewpoint B", "Lake C"]  # Dummy data  for now
+    recommendations = get_recommendations(lat, lng, radius)
 
     return jsonify({
         'status': 'success',

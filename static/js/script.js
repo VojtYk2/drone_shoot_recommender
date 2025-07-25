@@ -6,9 +6,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var marker = L.marker([51.505, -0.09]).addTo(map);
-var lastMarker = null;
-
-lastMarker = marker;
+var lastMarker = marker;
 
 function onMapClick(e) {
     marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);

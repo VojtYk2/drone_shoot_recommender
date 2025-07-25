@@ -38,8 +38,54 @@ function createCircle() {
     lastCircle = circle;
 }
 
+function submitForm() {
+    var lat = marker.getLatLng().lat;
+    var lng = marker.getLatLng().lng;
+    var radius = document.getElementById('radius').value;
+
+    fetch('/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            lat: lat,
+            lng: lng,
+            radius: radius
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.status === 'success') {
+            displayRecommendations(data.data.recommendations);
+        }
+        else {
+            alert("There has been an error generating recommendations.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Network error occurred.");
+    });
+}
+
+function displayRecommendations(recommendations) {
+    const recommendationsDiv = document.getElementsByClassName('recommendationsDiv')[0];
+
+    recommendationsDiv.innerHTML = '<h2>Recommendations</h2>';
+
+    recommendations.forEach(element => {
+        const p = document.createElement('p');
+        p.textContent = `${element}`;
+        recommendationsDiv.appendChild(p);
+    });
+}
+
 document.getElementById('radius').addEventListener('input', function() {
     createCircle();
 });
+
+document.getElementById('radius').value = 5000;
+document.getElementById('radiusOutput').value = document.getElementById('radius').value;
 
 map.on('click', onMapClick);

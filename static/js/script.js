@@ -73,9 +73,11 @@ function displayRecommendations(recommendations) {
     recommendationsDiv.innerHTML = '<h2>Recommendations</h2>';
 
     recommendations.forEach(element => {
-        const p = document.createElement('p');
-        p.textContent = `${element}`;
-        recommendationsDiv.appendChild(p);
+        const a = document.createElement('a');
+        a.textContent = `${element['name']}`;
+        a.href = element['link'];
+        a.target = '_blank';
+        recommendationsDiv.appendChild(a);
     });
 }
 

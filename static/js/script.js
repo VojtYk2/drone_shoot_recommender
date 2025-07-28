@@ -41,6 +41,9 @@ function submitForm() {
     var lng = marker.getLatLng().lng;
     var radius = document.getElementById('radius').value;
 
+    const recommendationsDiv = document.getElementsByClassName('recommendationsDiv')[0];
+    recommendationsDiv.innerHTML = '<h2>Recommendations</h2><p>Loading recommendations...</p>';
+
     fetch('/generate', {
         method: 'POST',
         headers: {
@@ -57,6 +60,9 @@ function submitForm() {
         if(data.status === 'success') {
             displayRecommendations(data.data.recommendations);
         }
+        else if(data.status === 'no_results') {
+            displayNoResults(data.message);
+        }
         else {
             alert("There has been an error generating recommendations.");
         }
@@ -67,17 +73,35 @@ function submitForm() {
     });
 }
 
+function displayNoResults(message) {
+    const recommendationsDiv = document.getElementsByClassName('recommendationsDiv')[0];
+    recommendationsDiv.innerHTML = '<h2>Recommendations</h2>';
+    const noResultsMessage = document.createElement('p');
+    noResultsMessage.textContent = message;
+    recommendationsDiv.appendChild(noResultsMessage);
+}
+
 function displayRecommendations(recommendations) {
     const recommendationsDiv = document.getElementsByClassName('recommendationsDiv')[0];
-
     recommendationsDiv.innerHTML = '<h2>Recommendations</h2>';
+    const recommendationsContainer = document.createElement('div');
+    recommendationsContainer.className = 'recommendations';
+    recommendationsDiv.appendChild(recommendationsContainer);
 
     recommendations.forEach(element => {
         const a = document.createElement('a');
-        a.textContent = `${element['name']}`;
+        const h3 = document.createElement('h3');
+        const cat = document.createElement('p');
+        const subcat = document.createElement('p');
+        h3.textContent = element['name'];
+        cat.textContent = "Category: " + element['category'];
+        subcat.textContent = "Subcategory: " + element['subcategory'];
+        a.appendChild(h3);
+        a.appendChild(cat);
+        a.appendChild(subcat);
         a.href = element['link'];
         a.target = '_blank';
-        recommendationsDiv.appendChild(a);
+        recommendationsContainer.appendChild(a);
     });
 }
 

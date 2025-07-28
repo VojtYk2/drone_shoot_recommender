@@ -3,6 +3,30 @@ import requests
 
 app = Flask(__name__)
 
+def get_cats(recommendation):
+    if "tourism" in recommendation['tags'].keys():
+        subcategory = recommendation['tags']['tourism']
+        if subcategory == 'yes':
+            subcategory = 'general attraction'
+        return {'category': 'Tourism', 'subcategory': subcategory}
+    elif "natural" in recommendation['tags'].keys():
+        subcategory = recommendation['tags']['natural']
+        if subcategory == 'yes':
+            subcategory = 'general natural feature'
+        return {'category': 'Natural', 'subcategory': subcategory}
+    elif "man_made" in recommendation['tags'].keys():
+        subcategory = recommendation['tags']['man_made']
+        if subcategory == 'yes':
+            subcategory = 'general structure'
+        return {'category': 'Man-Made', 'subcategory': subcategory}
+    elif "historic" in recommendation['tags'].keys():
+        subcategory = recommendation['tags']['historic']
+        if subcategory == 'yes':
+            subcategory = 'general historic site'
+        return {'category': 'Historic', 'subcategory': subcategory}
+    else:
+        return {'category': 'Unknown', 'subcategory': 'Unknown'}
+
 def get_recommendations(lat, lng, radius):
     overpass_url = "https://lz4.overpass-api.de/api/interpreter"
 
@@ -21,9 +45,9 @@ def get_recommendations(lat, lng, radius):
         node(around:{radius},{lat},{lng})["man_made"="bridge"]["bridge"~"suspension|cable_stayed|arch|cantilever|truss"];
         way(around:{radius},{lat},{lng})["man_made"="bridge"]["bridge"~"suspension|cable_stayed|arch|cantilever|truss"];
         relation(around:{radius},{lat},{lng})["man_made"="bridge"]["bridge"~"suspension|cable_stayed|arch|cantilever|truss"];
-        node(around:{radius},{lat},{lng})["man_made"="bridge"]["layer"~"2|3|4|5"];
-        way(around:{radius},{lat},{lng})["man_made"="bridge"]["layer"~"2|3|4|5"];
-        relation(around:{radius},{lat},{lng})["man_made"="bridge"]["layer"~"2|3|4|5"];
+        node(around:{radius},{lat},{lng})["man_made"="bridge"]["layer"~"3|4|5"];
+        way(around:{radius},{lat},{lng})["man_made"="bridge"]["layer"~"3|4|5"];
+        relation(around:{radius},{lat},{lng})["man_made"="bridge"]["layer"~"3|4|5"];
         node(around:{radius},{lat},{lng})["historic"~"castle|fort"];
         way(around:{radius},{lat},{lng})["historic"~"castle|fort"];
         relation(around:{radius},{lat},{lng})["historic"~"castle|fort"];
@@ -43,7 +67,9 @@ def get_recommendations(lat, lng, radius):
                     names.append(recommendation['tags']['name'].lower())
                     lat_coord = recommendation.get('lat') or recommendation.get('center', {}).get('lat')
                     lon_coord = recommendation.get('lon') or recommendation.get('center', {}).get('lon')
-                    recommendations.append({"name":recommendation['tags']['name'], "link": f"https://www.google.com/maps/search/?api=1&query={lat_coord},{lon_coord}"})
+                    mapsLink = f"https://www.google.com/maps/search/?api=1&query={lat_coord},{lon_coord}"
+                    cats = get_cats(recommendation)
+                    recommendations.append({"name":recommendation['tags']['name'], "link":mapsLink, "category":cats['category'], "subcategory":cats['subcategory']})
 
 
     return recommendations
@@ -66,6 +92,11 @@ def submit_form():
 
     recommendations = get_recommendations(lat, lng, radius)
 
+    if not recommendations:
+        return jsonify({
+            'status': 'no_results',
+            'message': 'No recommendations found for the specified location and radius.'
+        })
     return jsonify({
         'status': 'success',
         'data': {

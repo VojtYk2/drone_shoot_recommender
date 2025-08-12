@@ -41,6 +41,10 @@ function submitForm() {
     var lng = marker.getLatLng().lng;
     var radius = document.getElementById('radius').value;
 
+    if(window.innerWidth <= 700) {
+        document.getElementsByClassName('mapDiv')[0].style.display = 'none';
+    }
+
     const recommendationsDiv = document.getElementsByClassName('recommendationsDiv')[0];
     recommendationsDiv.innerHTML = '<h2>Recommendations</h2><p>Loading recommendations...</p>';
 
@@ -75,18 +79,28 @@ function submitForm() {
 
 function displayNoResults(message) {
     const recommendationsDiv = document.getElementsByClassName('recommendationsDiv')[0];
-    recommendationsDiv.innerHTML = '<h2>Recommendations</h2>';
+    recommendationsDiv.innerHTML = '<button class="generate-again">Generate Again</button><h2>Recommendations</h2>';
     const noResultsMessage = document.createElement('p');
     noResultsMessage.textContent = message;
     recommendationsDiv.appendChild(noResultsMessage);
+    
+    document.getElementsByClassName('generate-again')[0].addEventListener('click', function() {
+        document.getElementsByClassName('mapDiv')[0].style.display = 'flex';
+        document.getElementsByClassName('recommendationsDiv')[0].innerHTML = '';
+    });
 }
 
 function displayRecommendations(recommendations) {
     const recommendationsDiv = document.getElementsByClassName('recommendationsDiv')[0];
-    recommendationsDiv.innerHTML = '<h2>Recommendations</h2>';
+    recommendationsDiv.innerHTML = '<button class="generate-again">Generate Again</button><h2>Recommendations</h2>';
     const recommendationsContainer = document.createElement('div');
     recommendationsContainer.className = 'recommendations';
     recommendationsDiv.appendChild(recommendationsContainer);
+
+    document.getElementsByClassName('generate-again')[0].addEventListener('click', function() {
+        document.getElementsByClassName('mapDiv')[0].style.display = 'flex';
+        document.getElementsByClassName('recommendationsDiv')[0].innerHTML = '';
+    });
 
     recommendations.forEach(element => {
         const a = document.createElement('a');

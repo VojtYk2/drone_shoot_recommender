@@ -16,12 +16,13 @@ header h1 {
 section {
     margin: 20px;
     padding: 20px;
+    margin-top: 0;
     border-radius: 20px;
     display: flex;
     flex-direction: row;
     gap: 40px;
 }
-section > div {
+section > div  {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -36,8 +37,8 @@ section form {
     gap: 10px;
 }
 #map {
-    height: 700px;
-    width: 700px;
+    height: 500px;
+    width: 500px;
     border-radius: 20px;
 }
 .recommendationsDiv {
@@ -70,4 +71,17 @@ section form {
 }
 .recommendations p {
     margin: 0;
+}
+@media (max-width: 700px) {
+    section {
+        flex-direction: column;
+        padding: 0;
+    }
+    #map,
+    .recommendationsDiv {
+        width: 100%;
+    }
+    header {
+        padding: 20px;
+    }
 }

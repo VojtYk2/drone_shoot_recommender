@@ -69,7 +69,7 @@ def get_recommendations(lat, lng, radius):
                     lon_coord = recommendation.get('lon') or recommendation.get('center', {}).get('lon')
                     mapsLink = f"https://www.google.com/maps/search/?api=1&query={lat_coord},{lon_coord}"
                     cats = get_cats(recommendation)
-                    recommendations.append({"name":recommendation['tags']['name'], "link":mapsLink, "category":cats['category'], "subcategory":cats['subcategory']})
+                    recommendations.append({"name":recommendation['tags']['name'], "link":mapsLink, "category":cats['category'], "subcategory":cats['subcategory'], "lat":lat_coord, "lng":lon_coord})
 
 
     return recommendations

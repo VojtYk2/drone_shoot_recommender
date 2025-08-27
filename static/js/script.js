@@ -7,6 +7,11 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 var marker;
 var circle;
+let lastGen = null;
+let gen = false;
+let load = false;
+let displayingLoc = false;
+let markers = [];
 
 function success(position) {
     var lat = position.coords.latitude;
@@ -46,9 +51,6 @@ else {
     }).addTo(map);
 }
 
-let gen = false;
-let load = false;
-
 function onMapClick(e) {
     if (marker) {
         map.removeLayer(marker);
@@ -76,6 +78,11 @@ function submitForm() {
     gen = true;
     load = true;
 
+    if (displayingLoc) {
+        displayLocations();
+    }
+    document.getElementsByClassName('displayLocationsButton')[0].style.display = 'none';
+
     if (window.innerWidth <= 900) {
         document.getElementsByClassName('mapDiv')[0].style.display = 'none';
     }
@@ -97,6 +104,7 @@ function submitForm() {
     .then(response => response.json())
     .then(data => {
         if(data.status === 'success') {
+            lastGen = data.data.recommendations;
             displayRecommendations(data.data.recommendations);
         }
         else if(data.status === 'no_results') {
@@ -134,6 +142,7 @@ function displayNoResults(message) {
 function displayRecommendations(recommendations) {
     const recommendationsDiv = document.getElementsByClassName('recommendationsDiv')[0];
     load = false;
+    document.getElementsByClassName('displayLocationsButton')[0].style.display = 'block';
     if (window.innerWidth <= 900) {
         recommendationsDiv.innerHTML = '<button class="generate-again">Generate Again</button><h2>Recommendations</h2>';
     }
@@ -159,6 +168,32 @@ function displayRecommendations(recommendations) {
         a.target = '_blank';
         recommendationsContainer.appendChild(a);
     });
+}
+
+function displayLocations() {
+    if (!displayingLoc) {
+        displayingLoc = true;
+        var locMarker;
+        lastGen.forEach(element => {
+            locMarker = L.marker([element.lat, element.lng]).addTo(map);
+            markers.push(locMarker);
+            locMarker.bindPopup(element.name);
+            locMarker.on('mouseover', function (e) {
+                this.openPopup();
+            });
+            locMarker.on('mouseout', function (e) {
+                this.closePopup();
+            });
+        });
+        document.getElementsByClassName('displayLocationsButton')[0].innerHTML = 'Hide Locations';
+    }
+    else {
+        markers.forEach(element => {
+            map.removeLayer(element);
+        });
+        displayingLoc = false;
+        document.getElementsByClassName('displayLocationsButton')[0].innerHTML = 'Show Locations';
+    }
 }
 
 document.getElementById('radius').addEventListener('input', function() {

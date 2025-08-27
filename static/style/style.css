@@ -7,7 +7,7 @@ body {
 }
 header {
     padding: 40px;
-    padding-bottom: 10px;
+    padding-bottom: 0;
 }
 header h1 {
     margin: 0;
@@ -43,14 +43,30 @@ button {
     padding: 20px;
     border: none;
     border-radius: 16px;
+    transition: transform 0.5s ease, box-shadow 0.5s ease, z-index 0.5s ease;
+}
+button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+.mapDiv {
+    width: calc(50% - 20px);
 }
 #map {
-    height: 500px;
-    width: 500px;
+    height: 450px;
+    width: 100%;
     border-radius: 16px;
 }
-.recommendationsDiv {
+.buttons {
     width: 100%;
+    display: flex;
+    gap: 10px;
+}
+.buttons button {
+    width: 50%;
+}
+.recommendationsDiv {
+    width: calc(50% - 20px);
 }
 .recommendations {
     display: grid;
@@ -80,11 +96,19 @@ button {
 .recommendations p {
     margin: 0;
 }
+.warning {
+    border-radius: 12px;
+    padding: 12px;
+    border: red 2px solid;
+    background-color: rgb(255, 176, 176);
+    color: red;
+}
 @media (max-width: 900px) {
     section {
         flex-direction: column;
         padding: 0;
     }
+    .mapDiv,
     #map,
     .recommendationsDiv {
         width: 100%;

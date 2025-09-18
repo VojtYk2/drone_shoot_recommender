@@ -5,6 +5,20 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+var redIcon = L.icon({
+    iconUrl: 'static/images/red_marker.svg',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
+var blueIcon = L.icon({
+    iconUrl: 'static/images/blue_marker.svg',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
+
 var marker;
 var circle;
 let lastGen = null;
@@ -17,7 +31,7 @@ function success(position) {
     var lat = position.coords.latitude;
     var lng = position.coords.longitude;
     map.setView([lat, lng], 10);
-    marker = L.marker([lat, lng]).addTo(map);
+    marker = L.marker([lat, lng], {icon:redIcon, zIndexOffset: 1000}).addTo(map);
     circle = L.circle([lat, lng], {
         radius: document.getElementById('radius').value,
         color: 'blue',
@@ -28,7 +42,7 @@ function success(position) {
 
 function fail(error) {
     map.setView([51.505, -0.09], 10);
-    marker = L.marker([51.505, -0.09]).addTo(map);
+    marker = L.marker([51.505, -0.09], {icon:redIcon, zIndexOffset: 1000}).addTo(map);
     circle = L.circle([51.505, -0.09], {
         radius: document.getElementById('radius').value,
         color: 'blue',
@@ -38,11 +52,11 @@ function fail(error) {
 }
 
 if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(success, fail, {enableHighAccuracy: true, timeout: 5000, maximumAge: 0});
+    navigator.geolocation.getCurrentPosition(success, fail, {enableHighAccuracy: true, timeout: 7000, maximumAge: 0});
 }
 else {
     map.setView([51.505, -0.09], 10);
-    marker = L.marker([51.505, -0.09]).addTo(map);
+    marker = L.marker([51.505, -0.09], {icon:redIcon, zIndexOffset: 1000}).addTo(map);
     circle = L.circle([51.505, -0.09], {
         radius: document.getElementById('radius').value,
         color: 'blue',
@@ -55,8 +69,11 @@ function onMapClick(e) {
     if (marker) {
         map.removeLayer(marker);
     }
-    marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+    marker = L.marker([e.latlng.lat, e.latlng.lng], {icon:redIcon, zIndexOffset: 1000}).addTo(map);
     createCircle();
+    if (displayingLoc) {
+        displayLocations();
+    }
 }
 
 function createCircle() {
@@ -175,7 +192,7 @@ function displayLocations() {
         displayingLoc = true;
         var locMarker;
         lastGen.forEach(element => {
-            locMarker = L.marker([element.lat, element.lng]).addTo(map);
+            locMarker = L.marker([element.lat, element.lng], {icon:blueIcon}).addTo(map);
             markers.push(locMarker);
             locMarker.bindPopup(element.name);
             locMarker.on('mouseover', function (e) {

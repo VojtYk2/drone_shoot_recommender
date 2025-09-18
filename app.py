@@ -56,7 +56,12 @@ def get_recommendations(lat, lng, radius):
     """
 
     response = requests.get(overpass_url, params={'data': query})
-    data = response.json()
+    try:
+        data = response.json()
+    except Exception as e:
+        print(f"Error parsing JSON response: {e}")
+        print("Response text:", response.text)
+        return []
     recommendations = []
     names = []
     

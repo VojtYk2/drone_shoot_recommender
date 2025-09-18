@@ -162,6 +162,11 @@ function displayRecommendations(recommendations) {
     document.getElementsByClassName('displayLocationsButton')[0].style.display = 'block';
     if (window.innerWidth <= 900) {
         recommendationsDiv.innerHTML = '<button class="generate-again">Generate Again</button><h2>Recommendations</h2>';
+        document.getElementsByClassName('generate-again')[0].addEventListener('click', function() {
+            document.getElementsByClassName('mapDiv')[0].style.display = 'flex';
+            gen = false;
+            recommendationsDiv.innerHTML = '';
+        });
     }
     else {
         recommendationsDiv.innerHTML = '<h2>Recommendations</h2>';
